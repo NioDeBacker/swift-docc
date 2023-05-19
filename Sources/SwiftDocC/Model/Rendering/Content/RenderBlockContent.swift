@@ -76,6 +76,8 @@ public enum RenderBlockContent: Equatable {
     
     /// A video with an optional caption.
     case video(Video)
+    
+    case footnoteDefinition(FootnoteDefinition)
 
     // Warning: If you add a new case to this enum, make sure to handle it in the Codable
     // conformance at the bottom of this file, and in the `rawIndexableTextContent` method in
@@ -574,6 +576,14 @@ public enum RenderBlockContent: Equatable {
         public init(identifier: RenderReferenceIdentifier, metadata: RenderContentMetadata? = nil) {
             self.identifier = identifier
             self.metadata = metadata
+        }
+    }
+    
+    public struct FootnoteDefinition: Codable, Equatable {
+        public let footnoteID: String
+                
+        public init(footnoteID: String) {
+            self.footnoteID = footnoteID
         }
     }
 }

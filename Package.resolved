@@ -14,8 +14,8 @@
         "package": "cmark-gfm",
         "repositoryURL": "https://github.com/apple/swift-cmark.git",
         "state": {
-          "branch": "gfm",
-          "revision": "eb9a6a357b6816c68f4b194eaa5b67f3cd1fa5c3",
+          "branch": "QuietMisdreavus/footnote-fixes",
+          "revision": "fdb19de06187abb6840e966d66cbdde4dd54480e",
           "version": null
         }
       },
@@ -57,10 +57,10 @@
       },
       {
         "package": "swift-markdown",
-        "repositoryURL": "https://github.com/apple/swift-markdown.git",
+        "repositoryURL": "https://github.com/NioDeBacker/swift-markdown.git",
         "state": {
-          "branch": "main",
-          "revision": "36b71b380ca9cb7497fc24416f8b77721eaf7330",
+          "branch": "footnotes",
+          "revision": "d32895497ccb9dc28e11a71238d57163288cf779",
           "version": null
         }
       },

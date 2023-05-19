@@ -54,16 +54,18 @@ public enum RenderInlineContent: Equatable {
     case superscript(inlineContent: [RenderInlineContent])
     /// A strikethrough piece of content.
     case strikethrough(inlineContent: [RenderInlineContent])
+    /// A footnote reference
+    case footnoteReference(footnoteID: String, inlineContent: [RenderInlineContent])
 }
 
 // Codable conformance
 extension RenderInlineContent: Codable {
     private enum InlineType: String, Codable {
-        case codeVoice, emphasis, strong, image, reference, text, newTerm, inlineHead, `subscript`, superscript, strikethrough
+        case codeVoice, emphasis, strong, image, reference, text, newTerm, inlineHead, `subscript`, superscript, strikethrough, footnoteReference
     }
     
     private enum CodingKeys: CodingKey {
-        case type, code, inlineContent, identifier, title, destination, text, isActive, overridingTitle, overridingTitleInlineContent, metadata
+        case type, code, inlineContent, identifier, title, destination, text, isActive, overridingTitle, overridingTitleInlineContent, metadata, footnoteID
     }
     
     private var type: InlineType {
@@ -79,6 +81,7 @@ extension RenderInlineContent: Codable {
         case .newTerm: return .newTerm
         case .inlineHead: return .inlineHead
         case .strikethrough: return .strikethrough
+        case .footnoteReference: return .footnoteReference
         }
     }
     
@@ -130,6 +133,9 @@ extension RenderInlineContent: Codable {
             self = try .superscript(inlineContent: container.decode([RenderInlineContent].self, forKey: .inlineContent))
         case .strikethrough:
             self = try .strikethrough(inlineContent: container.decode([RenderInlineContent].self, forKey: .inlineContent))
+        case .footnoteReference:
+            let footnoteID = try container.decode(String.self, forKey: .footnoteID)
+            self = try .footnoteReference(footnoteID: footnoteID, inlineContent: container.decode([RenderInlineContent].self, forKey: .inlineContent))
         }
     }
     
@@ -162,6 +168,9 @@ extension RenderInlineContent: Codable {
         case .superscript(inlineContent: let inlineContent):
             try container.encode(inlineContent, forKey: .inlineContent)
         case .strikethrough(inlineContent: let inlineContent):
+            try container.encode(inlineContent, forKey: .inlineContent)
+        case .footnoteReference(let footnoteID, inlineContent: let inlineContent):
+            try container.encode(footnoteID, forKey: .footnoteID)
             try container.encode(inlineContent, forKey: .inlineContent)
         }
     }
@@ -200,6 +209,8 @@ extension RenderInlineContent {
             return inlineContent.plainText
         case let .strikethrough(inlineContent):
             return inlineContent.plainText
+        case let .footnoteReference(footnoteID, inlineContent):
+            return footnoteID + inlineContent.plainText
         }
     }
 }
