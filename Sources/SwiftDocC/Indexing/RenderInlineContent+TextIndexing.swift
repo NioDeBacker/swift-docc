@@ -51,6 +51,8 @@ extension RenderInlineContent: TextIndexing {
             return inlines.rawIndexableTextContent(references: references)
         case let .strikethrough(inlines):
             return inlines.rawIndexableTextContent(references: references)
+        case let .footnoteReference(string):
+            return string
         }
     }
 }
