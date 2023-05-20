@@ -55,7 +55,7 @@ public enum RenderInlineContent: Equatable {
     /// A strikethrough piece of content.
     case strikethrough(inlineContent: [RenderInlineContent])
     /// A footnote reference
-    case footnoteReference(footnoteID: String, inlineContent: [RenderInlineContent])
+    case footnoteReference(footnoteID: String)
 }
 
 // Codable conformance
@@ -134,8 +134,7 @@ extension RenderInlineContent: Codable {
         case .strikethrough:
             self = try .strikethrough(inlineContent: container.decode([RenderInlineContent].self, forKey: .inlineContent))
         case .footnoteReference:
-            let footnoteID = try container.decode(String.self, forKey: .footnoteID)
-            self = try .footnoteReference(footnoteID: footnoteID, inlineContent: container.decode([RenderInlineContent].self, forKey: .inlineContent))
+            self = try .footnoteReference(footnoteID: container.decode(String.self, forKey: .footnoteID))
         }
     }
     
@@ -169,9 +168,8 @@ extension RenderInlineContent: Codable {
             try container.encode(inlineContent, forKey: .inlineContent)
         case .strikethrough(inlineContent: let inlineContent):
             try container.encode(inlineContent, forKey: .inlineContent)
-        case .footnoteReference(let footnoteID, inlineContent: let inlineContent):
+        case .footnoteReference(let footnoteID):
             try container.encode(footnoteID, forKey: .footnoteID)
-            try container.encode(inlineContent, forKey: .inlineContent)
         }
     }
 }
@@ -209,8 +207,8 @@ extension RenderInlineContent {
             return inlineContent.plainText
         case let .strikethrough(inlineContent):
             return inlineContent.plainText
-        case let .footnoteReference(footnoteID, inlineContent):
-            return footnoteID + inlineContent.plainText
+        case let .footnoteReference(footnoteID):
+            return footnoteID
         }
     }
 }

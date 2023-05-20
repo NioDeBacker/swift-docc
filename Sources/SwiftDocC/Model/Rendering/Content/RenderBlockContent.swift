@@ -581,9 +581,12 @@ public enum RenderBlockContent: Equatable {
     
     public struct FootnoteDefinition: Codable, Equatable {
         public let footnoteID: String
+        public var content: [RenderBlockContent]
+
                 
-        public init(footnoteID: String) {
+        public init(footnoteID: String, content: [RenderBlockContent]) {
             self.footnoteID = footnoteID
+            self.content = content
         }
     }
 }
@@ -710,6 +713,7 @@ extension RenderBlockContent: Codable {
         case numberOfColumns, columns
         case tabs
         case identifier
+        case footnoteID
     }
     
     public init(from decoder: Decoder) throws {
@@ -786,11 +790,15 @@ extension RenderBlockContent: Codable {
                     metadata: container.decodeIfPresent(RenderContentMetadata.self, forKey: .metadata)
                 )
             )
+        case .footnoteDefinition:
+            self = try .footnoteDefinition(
+                FootnoteDefinition(footnoteID: container.decode(String.self, forKey: .footnoteID), content: container.decode([RenderBlockContent].self, forKey: .content))
+            )
         }
     }
     
     private enum BlockType: String, Codable {
-        case paragraph, aside, codeListing, heading, orderedList, unorderedList, step, endpointExample, dictionaryExample, table, termList, row, small, tabNavigator, links, video
+        case paragraph, aside, codeListing, heading, orderedList, unorderedList, step, endpointExample, dictionaryExample, table, termList, row, small, tabNavigator, links, video, footnoteDefinition
     }
     
     private var type: BlockType {
@@ -811,6 +819,7 @@ extension RenderBlockContent: Codable {
         case .tabNavigator: return .tabNavigator
         case .links: return .links
         case .video: return .video
+        case .footnoteDefinition: return .footnoteDefinition
         default: fatalError("unknown RenderBlockContent case in type property")
         }
     }
@@ -872,6 +881,9 @@ extension RenderBlockContent: Codable {
         case .video(let video):
             try container.encode(video.identifier, forKey: .identifier)
             try container.encodeIfPresent(video.metadata, forKey: .metadata)
+        case .footnoteDefinition(let footnoteDefinition):
+            try container.encode(footnoteDefinition.footnoteID, forKey: .footnoteID)
+            try container.encode(footnoteDefinition.content, forKey: .content)
         default:
             fatalError("unknown RenderBlockContent case in encode method")
         }
